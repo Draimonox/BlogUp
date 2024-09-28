@@ -21,6 +21,7 @@ model User {
   posts     Post[]
   password  String
   username  String   @unique
+  bio       String
 }
 
 model Post {

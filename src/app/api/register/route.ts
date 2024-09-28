@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { name, username, email, password } = await req.json();
-    if (!name || !email || !password || !username) {
+    const { name, username, email, password, bio } = await req.json();
+    if (!email || !password || !username) {
       return NextResponse.json(
         {
-          error: `Please do not leave any fields empty`,
+          error: `Please do not leave any of the required fields empty`,
         },
         { status: 400 }
       );
@@ -23,6 +23,7 @@ export async function POST(req: Request) {
         username,
         email,
         password: hash,
+        bio,
       },
     });
     return NextResponse.json(createUser, { status: 201 });
