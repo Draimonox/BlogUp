@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
-    if (!name || !email || !password) {
+    const { email, password } = await req.json();
+    if (!email || !password) {
       return NextResponse.json(
         {
           error: `Please do not leave any fields empty`,
@@ -15,14 +15,22 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const salt = bcrypt.genSaltSync();
-    const hash = bcrypt.hashSync(password, salt);
-    const createUser = await prisma.user.findUnique({
+
+    const findUser = await prisma.user.findUnique({
       where: {
         email,
       },
     });
-    return NextResponse.json(createUser, { status: 201 });
+
+    if (!findUser) {
+      return NextResponse.json({ error: `User not found` }, { status: 404 });
+    }
+    const comparePassowrd = bcrypt.compareSync(password, findUser?.password);
+    if (!comparePassowrd) {
+      return NextResponse.json({ error: `Invalid password` }, { status: 401 });
+    }
+
+    return NextResponse.json(findUser, { status: 201 });
   } catch (err) {
     console.error(err);
     return NextResponse.json(
@@ -31,5 +39,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
-// NOT DONE!!!!!!!!!
