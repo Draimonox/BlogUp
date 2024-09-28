@@ -11,6 +11,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
 
 const isValidEmail = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,23 +23,35 @@ function Register() {
   const [username, setUserame] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
   //
 
   async function handleRegister() {
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        username,
-        email,
-        password,
-      }),
-    });
-    const data = await res.json();
-    console.log(data);
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          username,
+          email,
+          password,
+        }),
+      });
+      const data = await res.json();
+      console.log(data);
+
+      if (res.ok) {
+        setCookie("userId", data.id);
+        router.push("/");
+      } else {
+        throw new Error(data.details);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +187,7 @@ function Register() {
             color="green"
             radius="xl"
             style={{ marginTop: "15px" }}
+            onSubmit={handleRegister}
           >
             Register
           </Button>
