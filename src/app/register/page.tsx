@@ -16,13 +16,8 @@ import {
 import { useRouter } from "next/navigation";
 
 import { setCookie } from "cookies-next";
-import firebaseApp from "@/firebaseConfig";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import { storage } from "@/firebaseConfig";
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 
 function Register() {
   const [name, setName] = useState("");
@@ -30,32 +25,23 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
-  const [image, setImage] = useState<File | null>(null);
   const [url, setUrl] = useState<string>("");
   const router = useRouter();
   //
 
-  const handleUpload = () => {
-    if (!image) return;
-
-    const storage = getStorage(firebaseApp);
-    const storageRef = ref(storage, `images/${image.name}`);
-
-    const uploadTask = uploadBytesResumable(storageRef, image);
-
-    uploadTask.on(
-      "state_changed",
-      null,
-      (error) => {
-        console.error("Upload failed:", error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setUrl(downloadURL);
-          console.log("File available at", downloadURL);
-        });
-      }
-    );
+  const handleUpload = async () => {
+    try {
+      const imgRef = ref(storage, `images/${url.split("/").pop()}`); // Use the filename from the URL
+      const response = await fetch(url);
+      const blob = await response.blob();
+      await uploadBytes(imgRef, blob);
+      console.log("Uploaded a blob or file!");
+      const downloadURL = await getDownloadURL(imgRef);
+      setUrl(downloadURL);
+      console.log("File available at", downloadURL);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
   };
   const handleImageChange = (file: File | null) => {
     if (file) {
@@ -65,7 +51,6 @@ function Register() {
 
   const handleRemoveImage = () => {
     setUrl("");
-    setImage(null);
   };
 
   const isValidEmail = (email: string) => {
@@ -76,7 +61,7 @@ function Register() {
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     if (!isValidEmail(email)) {
-      throw new Error("Please enter a valid email address.");
+      return;
     }
     if (!username || !email || !password) {
       console.log({ name, username, email, password, bio, url });

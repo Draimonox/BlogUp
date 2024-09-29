@@ -1,6 +1,6 @@
 // firebaseConfig.ts
 import { initializeApp } from "firebase/app";
-// import { FirebaseOptions } from "firebase/app";
+import { getStorage, FirebaseStorage } from "firebase/storage"; // Import getStorage to use Storage
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbE-sO9YZKwuv4fkJNn4E9Y5ON9-BxENY",
@@ -12,4 +12,8 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-export default firebaseApp;
+
+// Initialize Cloud Storage
+const storage: FirebaseStorage = getStorage(firebaseApp);
+
+export { firebaseApp, storage };
