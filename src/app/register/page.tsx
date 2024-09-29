@@ -26,7 +26,11 @@ function Register() {
   const router = useRouter();
   //
 
-  async function handleRegister() {
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    if (!isValidEmail(email)) {
+      return;
+    }
     try {
       const res = await fetch("/api/register", {
         method: "POST",
