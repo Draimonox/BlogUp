@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { name, username, email, password, bio } = await req.json();
+    const { name, username, email, password, bio, image } = await req.json();
     if (!email || !password || !username) {
       return NextResponse.json(
         {
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
         email,
         password: hash,
         bio,
+        image,
       },
     });
     return NextResponse.json(createUser, { status: 201 });
