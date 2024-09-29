@@ -12,7 +12,6 @@ function Header() {
           style={{
             display: "flex",
             alignItems: "center",
-
             justifyContent: "space-between",
           }}
         >
