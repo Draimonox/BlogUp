@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-// import { Image } from "@mantine/core";
 import Image from "next/image";
 import {
   Anchor,
@@ -14,10 +13,11 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
-
 import { setCookie } from "cookies-next";
 import { storage } from "@/firebaseConfig";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import dotenv from "dotenv";
+dotenv.config();
 
 function Register() {
   const [name, setName] = useState("");
@@ -27,8 +27,8 @@ function Register() {
   const [bio, setBio] = useState("");
   const [url, setUrl] = useState<string>("");
   const router = useRouter();
-  //
 
+  //
   const handleUpload = async () => {
     try {
       const imgRef = ref(storage, `images/${url.split("/").pop()}`);
@@ -67,6 +67,7 @@ function Register() {
       console.log({ name, username, email, password, bio, url });
       throw new Error("Username, Email, and Password required!");
     }
+    const normalizedEmail = email.toLowerCase();
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -76,7 +77,7 @@ function Register() {
         body: JSON.stringify({
           name,
           username,
-          email,
+          email: normalizedEmail,
           password,
           bio,
           image: url,
@@ -86,7 +87,8 @@ function Register() {
       console.log(data);
 
       if (res.ok) {
-        setCookie("userId", data.id);
+        setCookie("token", data.token);
+        console.log(data.token);
         handleUpload();
         router.push("/");
       } else {
@@ -94,8 +96,6 @@ function Register() {
       }
     } catch (err) {
       console.error(err);
-    } finally {
-      console.log("horrayy");
     }
   }
 
@@ -216,6 +216,7 @@ function Register() {
             radius="xl"
             variant="filled"
             autosize
+            maxLength={125}
             minRows={1}
             size="md"
             value={bio}

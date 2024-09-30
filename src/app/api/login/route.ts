@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const prisma = new PrismaClient();
-
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
@@ -16,21 +19,37 @@ export async function POST(req: Request) {
       );
     }
 
-    const findUser = await prisma.user.findUnique({
+    console.log("Email:", email); 
+
+    // Normalize email
+    const normalizedEmail = email.toLowerCase();
+    const findUser = await prisma.user.findFirst({
       where: {
-        email,
+        email: normalizedEmail, 
       },
     });
+
+    console.log("Found User:", findUser); 
 
     if (!findUser) {
       return NextResponse.json({ error: `User not found` }, { status: 404 });
     }
-    const comparePassowrd = bcrypt.compareSync(password, findUser?.password);
-    if (!comparePassowrd) {
+
+    const comparePassword = bcrypt.compareSync(password, findUser?.password);
+    if (!comparePassword) {
       return NextResponse.json({ error: `Invalid password` }, { status: 401 });
     }
 
-    return NextResponse.json(findUser, { status: 201 });
+    const secret = process.env.SECRET;
+    if (!secret) {
+      return NextResponse.json(
+        { error: "JWT secret is not defined" },
+        { status: 500 }
+      );
+    }
+
+    const token = jwt.sign({ id: findUser.id }, secret, { expiresIn: "1h" });
+    return NextResponse.json({ findUser, token }, { status: 200 }); // Changed to 200 for successful login
   } catch (err) {
     console.error(err);
     return NextResponse.json(

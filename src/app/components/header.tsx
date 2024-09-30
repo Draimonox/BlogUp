@@ -1,10 +1,18 @@
 "use client";
 import { Button, Center, CloseButton, Input } from "@mantine/core";
 import { IconAt } from "@tabler/icons-react";
+import { deleteCookie } from "cookies-next";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 function Header() {
   const [textBox, setTextBox] = useState("");
+  const router = useRouter();
+
+  function logOut() {
+    deleteCookie("token");
+    router.push("/login");
+  }
   return (
     <>
       <header>
@@ -41,7 +49,13 @@ function Header() {
             <Button variant="light" color="gray" size="lg" radius="xl">
               Profile
             </Button>
-            <Button variant="light" color="red" size="lg" radius="xl">
+            <Button
+              variant="light"
+              color="red"
+              size="lg"
+              radius="xl"
+              onClick={logOut}
+            >
               Log out
             </Button>
           </div>
