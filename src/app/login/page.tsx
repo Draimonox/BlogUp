@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
+import { Title } from "@mantine/core";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -50,47 +51,53 @@ function Login() {
   }
 
   return (
-    <Center h={650}>
-      <form style={{ width: "20%" }} onSubmit={handleLogin}>
-        <Input
-          variant="filled"
-          size="lg"
-          radius="xl"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", marginBottom: "10px" }}
-        />
-        <PasswordInput
-          variant="filled"
-          size="lg"
-          radius="xl"
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: "10px" }}
-        />
-        <Button
-          variant="filled"
-          size="lg"
-          color="green"
-          radius="xl"
-          style={{ marginTop: "15px" }}
-          type="submit"
-        >
-          Login
-        </Button>
-        <Divider
-          my="xl"
-          label={
-            <Anchor href="/register" target="_self" inherit>
-              Register
-            </Anchor>
-          }
-        />
-      </form>
-    </Center>
+    <>
+      <Center h={800}>
+        <form style={{ width: "20%" }} onSubmit={handleLogin}>
+          <div>
+            <Title order={1}>Login</Title>
+            <Divider my="md" />
+          </div>
+          <Input
+            variant="filled"
+            size="lg"
+            radius="xl"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ width: "100%", marginBottom: "10px", marginTop: "10px" }}
+          />
+          <PasswordInput
+            variant="filled"
+            size="lg"
+            radius="xl"
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ width: "100%", marginBottom: "10px" }}
+          />
+          <Button
+            variant="filled"
+            size="lg"
+            color="green"
+            radius="xl"
+            style={{ marginTop: "15px" }}
+            type="submit"
+          >
+            Login
+          </Button>
+          <Divider
+            my="xl"
+            label={
+              <Anchor href="/register" target="_self" inherit>
+                Register
+              </Anchor>
+            }
+          />
+        </form>
+      </Center>
+    </>
   );
 }
 

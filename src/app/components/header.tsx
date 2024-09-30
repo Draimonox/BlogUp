@@ -10,6 +10,7 @@ function Header() {
   const router = useRouter();
 
   function logOut() {
+    console.log("Logging out..."); // Debugging: Log when logOut is called
     deleteCookie("token");
     router.push("/login");
   }
@@ -43,7 +44,15 @@ function Header() {
             />
           </Center>
           <div style={{ display: "flex", gap: "10px", marginRight: "5%" }}>
-            <Button variant="light" color="green" size="lg" radius="xl">
+            <Button
+              variant="light"
+              color="green"
+              size="lg"
+              radius="xl"
+              onClick={() => {
+                router.push("/blogUp");
+              }}
+            >
               BlogUp!
             </Button>
             <Button variant="light" color="gray" size="lg" radius="xl">

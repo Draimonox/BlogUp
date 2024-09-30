@@ -11,6 +11,7 @@ import {
   Input,
   PasswordInput,
   Textarea,
+  Title,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
@@ -101,15 +102,20 @@ function Register() {
 
   return (
     <>
-      <Center h={750}>
+      <Center h={800}>
         <form style={{ width: "20%" }} onSubmit={handleRegister}>
+          <div>
+            <Title order={1}>Register</Title>
+            <Divider my="md" />
+          </div>
+
           <FileInput
             variant="unstyled"
             size="md"
             radius="lg"
             label="Profile Picture"
             placeholder="Click Here *"
-            style={{}}
+            style={{ marginTop: "10px" }}
             onChange={handleImageChange}
           />
           <Center>

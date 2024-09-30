@@ -19,17 +19,17 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("Email:", email); 
+    console.log("Email:", email);
 
     // Normalize email
     const normalizedEmail = email.toLowerCase();
     const findUser = await prisma.user.findFirst({
       where: {
-        email: normalizedEmail, 
+        email: normalizedEmail,
       },
     });
 
-    console.log("Found User:", findUser); 
+    console.log("Found User:", findUser);
 
     if (!findUser) {
       return NextResponse.json({ error: `User not found` }, { status: 404 });
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     }
 
     const token = jwt.sign({ id: findUser.id }, secret, { expiresIn: "1h" });
-    return NextResponse.json({ findUser, token }, { status: 200 }); // Changed to 200 for successful login
+    return NextResponse.json({ findUser, token }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json(
