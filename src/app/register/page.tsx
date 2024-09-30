@@ -31,7 +31,7 @@ function Register() {
 
   const handleUpload = async () => {
     try {
-      const imgRef = ref(storage, `images/${url.split("/").pop()}`); // Use the filename from the URL
+      const imgRef = ref(storage, `images/${url.split("/").pop()}`);
       const response = await fetch(url);
       const blob = await response.blob();
       await uploadBytes(imgRef, blob);
