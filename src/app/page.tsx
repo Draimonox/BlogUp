@@ -51,19 +51,26 @@ function SearchPage() {
   return (
     <>
       <Header />
-      <div>
+      <div style={{ display: "flex" }}>
         {Array.isArray(users) && users.length > 0 ? (
           users.map((user) => (
-            <div key={user.username}>
+            <div key={user.username} style={{ border: "" }}>
               {user.image ? (
                 <Image
                   src={user.image}
                   alt={`${user.name}'s profile`}
-                  width={100}
-                  height={100}
+                  width={75}
+                  height={75}
+                  style={{
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 />
               ) : (
-                <p>No image available</p>
+                <p>: )</p>
               )}
               <p>{user.username}</p>
             </div>
