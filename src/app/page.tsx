@@ -7,7 +7,13 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 function SearchPage() {
-  const [users, setUsers] = useState([]);
+  interface User {
+    username: string;
+    image?: string;
+    name: string;
+  }
+
+  const [users, setUsers] = useState<User[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -49,10 +55,9 @@ function SearchPage() {
         {Array.isArray(users) && users.length > 0 ? (
           users.map((user) => (
             <div key={user.username}>
-              {console.log(user.image)}
               {user.image ? (
                 <Image
-                  src={user.image} // Assuming user.image already includes the token
+                  src={user.image}
                   alt={`${user.name}'s profile`}
                   width={100}
                   height={100}
