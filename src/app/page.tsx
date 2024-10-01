@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { Center, Paper, ScrollArea, Text } from "@mantine/core";
 
 function SearchPage() {
   interface User {
@@ -51,34 +52,65 @@ function SearchPage() {
   return (
     <>
       <Header />
-      <div style={{ display: "flex" }}>
-        {Array.isArray(users) && users.length > 0 ? (
-          users.map((user) => (
-            <div key={user.username} style={{ border: "" }}>
-              {user.image ? (
-                <Image
-                  src={user.image}
-                  alt={`${user.name}'s profile`}
-                  width={75}
-                  height={75}
+      <Center style={{ height: "85vh", paddingTop: "60px" }}>
+        <ScrollArea
+          h={"100%"}
+          type="never"
+          style={{
+            width: "100%",
+            maxWidth: "600px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              height: "100%",
+              width: "100%",
+              maxWidth: "600px",
+            }}
+            onClick={() => {
+              router.push("/blogUp");
+            }}
+          >
+            {Array.isArray(users) && users.length > 0 ? (
+              users.map((user) => (
+                <Paper
+                  key={user.username}
                   style={{
-                    borderRadius: "50%",
-                    overflow: "hidden",
                     display: "flex",
-                    justifyContent: "center",
                     alignItems: "center",
+                    gap: "1rem",
+                    cursor: "pointer",
                   }}
-                />
-              ) : (
-                <p>: )</p>
-              )}
-              <p>{user.username}</p>
-            </div>
-          ))
-        ) : (
-          <p>No users found.</p>
-        )}
-      </div>
+                  shadow="sm"
+                  withBorder
+                  p="xl"
+                  radius="xl"
+                >
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt={`${user.name}'s profile`}
+                      width={75}
+                      height={75}
+                      style={{
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <p>: )</p>
+                  )}
+                  <Text fw={700}>{user.username}</Text>
+                </Paper>
+              ))
+            ) : (
+              <p>No users found.</p>
+            )}
+          </div>
+        </ScrollArea>
+      </Center>
     </>
   );
 }
