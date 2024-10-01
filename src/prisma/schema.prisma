@@ -28,9 +28,8 @@ model User {
 model Post {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
   title     String   @db.VarChar(255)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  String?
+  content   String?
 }

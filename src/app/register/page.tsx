@@ -14,12 +14,13 @@ import {
   Title,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
-import { setCookie } from "cookies-next";
+import { deleteCookie, setCookie } from "cookies-next";
 import { storage } from "@/firebaseConfig";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import dotenv from "dotenv";
 dotenv.config();
 
+deleteCookie("token");
 function Register() {
   const [name, setName] = useState("");
   const [username, setUserame] = useState("");

@@ -10,9 +10,10 @@ import {
   Anchor,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
-import { setCookie } from "cookies-next";
+import { deleteCookie, setCookie } from "cookies-next";
 import { Title } from "@mantine/core";
 
+deleteCookie("token");
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

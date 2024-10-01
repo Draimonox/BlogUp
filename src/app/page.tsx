@@ -22,6 +22,7 @@ function SearchPage() {
       router.push("/login");
     }
   }, []);
+
   return (
     <>
       <Header />
