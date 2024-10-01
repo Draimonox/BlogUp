@@ -10,19 +10,22 @@ function PostBlog() {
   const [content, setContent] = useState("");
   const router = useRouter();
 
+  const token = getCookie("token");
+  if (!token) {
+    router.push("/");
+  }
   async function postBlog(e: React.FormEvent) {
     e.preventDefault();
     if (!title) {
       throw new Error("Please dont leave the title empty!");
     }
-    const token = getCookie("token");
-    console.log("Token:", token); // Debugging: Log the token
+    console.log("Token:", token);
 
     let decodedToken = null;
     if (token) {
       try {
         decodedToken = jwt.decode(token as string);
-        console.log("Decoded Token:", decodedToken); // Debugging: Log the decoded token
+        console.log("Decoded Token:", decodedToken);
       } catch (err) {
         console.error("Failed to decode token:", err);
         router.push("/");
@@ -41,7 +44,7 @@ function PostBlog() {
         body: JSON.stringify({
           title,
           content,
-          authorId: authorId,
+          authorId,
         }),
       });
       const data = await res.json();
@@ -76,7 +79,7 @@ function PostBlog() {
             onChange={(e) => setTitle(e.target.value)}
           />
           <Textarea
-            label="Blog Body"
+            label="Content"
             autosize
             size="lg"
             radius="xl"

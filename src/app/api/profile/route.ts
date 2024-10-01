@@ -5,23 +5,26 @@ const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
   try {
-    const { image, name, posts, username, bio } = await req.json();
+    const url = new URL(req.url);
+    const image = url.searchParams.get("image");
+    const name = url.searchParams.get("name");
+    const username = url.searchParams.get("username");
+    const bio = url.searchParams.get("bio");
 
-    const findUser = await prisma.user.findFirst({
+    const findUser = await prisma.user.findMany({
       where: {
-        image,
-        name,
-        posts,
-        username,
-        bio,
+        ...(image && { image }),
+        ...(name && { name }),
+        ...(username && { username }),
+        ...(bio && { bio }),
       },
     });
 
-    if (!findUser) {
+    if (findUser.length === 0) {
       return NextResponse.json({ error: `User not found` }, { status: 404 });
     }
 
-    return NextResponse.json(findUser, { status: 201 });
+    return NextResponse.json(findUser, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json(
