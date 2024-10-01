@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Button,
@@ -13,12 +13,14 @@ import { useRouter } from "next/navigation";
 import { deleteCookie, setCookie } from "cookies-next";
 import { Title } from "@mantine/core";
 
-deleteCookie("token");
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
+  useEffect(() => {
+    deleteCookie("token");
+  }, []);
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) {

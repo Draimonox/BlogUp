@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Anchor,
@@ -17,34 +17,21 @@ import { useRouter } from "next/navigation";
 import { deleteCookie, setCookie } from "cookies-next";
 import { storage } from "@/firebaseConfig";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import dotenv from "dotenv";
-dotenv.config();
 
-deleteCookie("token");
 function Register() {
   const [name, setName] = useState("");
-  const [username, setUserame] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [url, setUrl] = useState<string>("");
   const router = useRouter();
 
+  useEffect(() => {
+    deleteCookie("token");
+  }, []);
   //
-  const handleUpload = async () => {
-    try {
-      const imgRef = ref(storage, `images/${url.split("/").pop()}`);
-      const response = await fetch(url);
-      const blob = await response.blob();
-      await uploadBytes(imgRef, blob);
-      console.log("Uploaded a blob or file!");
-      const downloadURL = await getDownloadURL(imgRef);
-      setUrl(downloadURL);
-      console.log("File available at", downloadURL);
-    } catch (error) {
-      console.error("Upload failed:", error);
-    }
-  };
+
   const handleImageChange = (file: File | null) => {
     if (file) {
       setUrl(URL.createObjectURL(file));
@@ -70,6 +57,14 @@ function Register() {
       throw new Error("Username, Email, and Password required!");
     }
     const normalizedEmail = email.toLowerCase();
+    const imgRef = ref(storage, `images/${url.split("/").pop()}`);
+    const response = await fetch(url);
+    const blob = await response.blob();
+    await uploadBytes(imgRef, blob);
+    console.log("Uploaded a blob or file!");
+    const downloadURL = await getDownloadURL(imgRef);
+    console.log(downloadURL);
+    console.log("File available at", downloadURL);
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -82,7 +77,7 @@ function Register() {
           email: normalizedEmail,
           password,
           bio,
-          image: url,
+          image: downloadURL,
         }),
       });
       const data = await res.json();
@@ -91,7 +86,6 @@ function Register() {
       if (res.ok) {
         setCookie("token", data.token);
         console.log(data.token);
-        handleUpload();
         router.push("/");
       } else {
         throw new Error(data.details);
@@ -115,7 +109,7 @@ function Register() {
             size="md"
             radius="lg"
             label="Profile Picture"
-            placeholder="Click Here *"
+            placeholder="Click Here"
             style={{ marginTop: "10px" }}
             onChange={handleImageChange}
           />
@@ -158,7 +152,7 @@ function Register() {
                 placeholder="Username"
                 style={{ width: "100%" }}
                 value={username}
-                onChange={(e) => setUserame(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <span
                 style={{
