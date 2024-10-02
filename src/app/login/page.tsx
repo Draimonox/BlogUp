@@ -9,7 +9,6 @@ import {
   Divider,
   Anchor,
 } from "@mantine/core";
-import { useRouter } from "next/navigation";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { Title } from "@mantine/core";
 
