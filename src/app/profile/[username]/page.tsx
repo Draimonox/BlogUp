@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Header from "../../components/header";
+import { Center, Divider, Paper, Text } from "@mantine/core";
 interface UserData {
   name: string;
   username: string;
@@ -53,22 +54,58 @@ const UserProfile = () => {
       <div>
         {userData ? (
           <>
-            <h1>{userData.name}&apos;s Profile</h1>
-            <Image
-              src={userData.image}
-              alt={`${userData.name}'s profile`}
-              width={150}
-              height={150}
-            />
-            <p>Username: @{userData.username}</p>
-            <p>Bio: {userData.bio}</p>
-            <h2>Posts:</h2>
+            <Text ta="center" td="underline" size="xl" fw={1000}>
+              {userData.name}&apos;s Profile
+            </Text>
+            <Center>
+              <Image
+                src={userData.image}
+                alt={`${userData.name}'s profile`}
+                width={150}
+                height={150}
+                style={{ marginTop: "15px", marginBottom: "15px" }}
+              />
+            </Center>
+
+            <Text ta="center">
+              <strong>Username:</strong> @{userData.username}
+            </Text>
+            <Text ta="center">
+              <strong>Bio: </strong> {userData.bio}
+            </Text>
+            <Divider my="md" variant="dashed" />
+            <Text ta="center" fw={700}>
+              Posts:
+            </Text>
             <ul>
               {posts.map((post) => (
-                <li key={post.id}>
-                  <h3>{post.title}</h3>
-                  <p>{post.content}</p>
-                </li>
+                <Center key={post.id}>
+                  <Paper
+                    shadow="lg"
+                    radius="xl"
+                    pb={25}
+                    pt={0}
+                    withBorder
+                    p="xl"
+                    style={{
+                      marginTop: "15px",
+                      width: "50%",
+                    }}
+                  >
+                    <li
+                      key={post.id}
+                      style={{
+                        marginTop: "15px",
+                        borderRadius: "5%",
+                      }}
+                    >
+                      <Text ta="center" size="lg" fw={500} td="underline">
+                        {post.title}
+                      </Text>
+                      <Text ta="center">{post.content}</Text>
+                    </li>
+                  </Paper>
+                </Center>
               ))}
             </ul>
           </>

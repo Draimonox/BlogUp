@@ -1,12 +1,14 @@
 "use client";
 import { Button, Text } from "@mantine/core";
 
-import { deleteCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import jwt from "jsonwebtoken";
 
 function Header() {
-  // const [textBox, setTextBox] = useState("");
+  const [username, setUsername] = useState("");
   const router = useRouter();
 
   function logOut() {
@@ -14,6 +16,42 @@ function Header() {
     deleteCookie("token");
     router.push("/login");
   }
+  const token = getCookie("token");
+  if (!token) {
+    router.push("/");
+  }
+
+  useEffect(() => {
+    async function fetchUsername() {
+      if (token) {
+        try {
+          const decodedToken = jwt.decode(token as string);
+          const authorId = (decodedToken as jwt.JwtPayload)?.id;
+
+          if (authorId) {
+            const res = await fetch(`/api/blogUp?authorId=${authorId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            const data = await res.json();
+            const username = data.username;
+            if (res.ok) {
+              setUsername(username);
+            } else {
+              console.error("Failed to fetch username:", data.error);
+            }
+          }
+        } catch (err) {
+          console.error("Failed to decode token:", err);
+          router.push("/");
+        }
+      }
+    }
+
+    fetchUsername();
+  }, [token, router]);
 
   return (
     <>
@@ -51,7 +89,15 @@ function Header() {
           >
             BlogUp!
           </Button>
-          <Button variant="light" color="gray" size="lg" radius="xl">
+          <Button
+            variant="light"
+            color="gray"
+            size="lg"
+            radius="xl"
+            onClick={() => {
+              router.push(`/profile/${username}`);
+            }}
+          >
             Profile
           </Button>
           <Button

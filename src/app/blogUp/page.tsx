@@ -15,7 +15,7 @@ function PostBlog() {
 
   const token = getCookie("token");
   if (!token) {
-    router.push("/");
+    router.push("/login");
   }
 
   useEffect(() => {
