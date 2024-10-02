@@ -27,7 +27,7 @@ function PostBlog() {
           const authorId = (decodedToken as jwt.JwtPayload)?.id;
 
           if (authorId) {
-            const res = await fetch(`/api/findUserById?authorId=${authorId}`, {
+            const res = await fetch(`/api/blogUp?authorId=${authorId}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",

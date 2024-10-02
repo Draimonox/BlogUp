@@ -6,9 +6,8 @@ const prisma = new PrismaClient();
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
-    const username = url.searchParams.get("username"); // Get the username from query parameters
+    const username = url.searchParams.get("username");
 
-    // Validate if username is provided
     if (!username) {
       return NextResponse.json(
         { error: "Username is required" },
@@ -16,7 +15,6 @@ export async function GET(req: Request) {
       );
     }
 
-    // Find user by username
     const findUser = await prisma.user.findUnique({
       where: { username },
       include: { posts: true },
