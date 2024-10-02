@@ -55,7 +55,7 @@ const UserProfile = () => {
         {userData ? (
           <>
             <Text ta="center" td="underline" size="xl" fw={1000}>
-              {userData.name}&apos;s Profile
+              {userData.username}&apos;s Profile
             </Text>
             <Center>
               <Image
