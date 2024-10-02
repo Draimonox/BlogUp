@@ -5,6 +5,7 @@ import { useState } from "react";
 import { getCookie } from "cookies-next";
 import jwt from "jsonwebtoken";
 import { useRouter } from "next/navigation";
+import Header from "../components/header";
 function PostBlog() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -61,6 +62,7 @@ function PostBlog() {
   }
   return (
     <>
+      <Header />
       <Center h={500}>
         <form style={{ width: "20%" }} onSubmit={postBlog}>
           <div>

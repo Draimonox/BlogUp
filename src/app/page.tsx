@@ -5,17 +5,27 @@ import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Center, Paper, ScrollArea, Text } from "@mantine/core";
+import {
+  Center,
+  CloseButton,
+  Input,
+  Paper,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
+import { IconAt } from "@tabler/icons-react";
 
 function SearchPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [textBox, setTextBox] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
   interface User {
     username: string;
     image?: string;
     name: string;
   }
-
-  const [users, setUsers] = useState<User[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     const token = getCookie("token");
@@ -25,6 +35,7 @@ function SearchPage() {
     } else {
       getAllUsers();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function getAllUsers() {
@@ -49,10 +60,42 @@ function SearchPage() {
     }
   }
 
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter((user) =>
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm, users]);
+
   return (
     <>
       <Header />
-      <Center style={{ height: "85vh", paddingTop: "60px" }}>
+
+      <Center h={100} style={{ paddingTop: "20px" }}>
+        <Input
+          size="lg"
+          radius="xl"
+          style={{ width: "25%" }}
+          placeholder="Handle"
+          rightSectionPointerEvents="all"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.currentTarget.value)}
+          leftSection={<IconAt size={20} />}
+          rightSection={
+            <CloseButton
+              aria-label="Clear input"
+              onClick={() => setSearchTerm("")} // Clear searchTerm
+              style={{ display: searchTerm ? undefined : "none" }}
+            />
+          }
+        />
+      </Center>
+
+      <Center style={{ height: "80vh", paddingTop: "20px" }}>
         <ScrollArea
           h={"100%"}
           type="never"
@@ -74,37 +117,41 @@ function SearchPage() {
               router.push("/blogUp");
             }}
           >
-            {Array.isArray(users) && users.length > 0 ? (
-              users.map((user) => (
-                <Paper
-                  key={user.username}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "1rem",
-                    cursor: "pointer",
-                  }}
-                  shadow="sm"
-                  withBorder
-                  p="xl"
-                  radius="xl"
-                >
-                  {user.image ? (
-                    <Image
-                      src={user.image}
-                      alt={`${user.name}'s profile`}
-                      width={75}
-                      height={75}
-                      style={{
-                        borderRadius: "50%",
-                      }}
-                    />
-                  ) : (
-                    <p>: )</p>
-                  )}
-                  <Text fw={700}>{user.username}</Text>
-                </Paper>
-              ))
+            {Array.isArray(filteredUsers) && filteredUsers.length > 0 ? (
+              filteredUsers.map(
+                (
+                  user // Corrected line
+                ) => (
+                  <Paper
+                    key={user.username}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                      cursor: "pointer",
+                    }}
+                    shadow="sm"
+                    withBorder
+                    p="xl"
+                    radius="xl"
+                  >
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt={`${user.name}'s profile`}
+                        width={75}
+                        height={75}
+                        style={{
+                          borderRadius: "50%",
+                        }}
+                      />
+                    ) : (
+                      <p>: )</p>
+                    )}
+                    <Text fw={700}>@{user.username}</Text>
+                  </Paper>
+                )
+              )
             ) : (
               <p>No users found.</p>
             )}

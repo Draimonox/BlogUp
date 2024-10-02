@@ -57,6 +57,7 @@ function Register() {
       throw new Error("Username, Email, and Password required!");
     }
     const normalizedEmail = email.toLowerCase();
+    const normalizedUsername = username.toLowerCase();
     const imgRef = ref(storage, `images/${url.split("/").pop()}`);
     const response = await fetch(url);
     const blob = await response.blob();
@@ -73,7 +74,7 @@ function Register() {
         },
         body: JSON.stringify({
           name,
-          username,
+          username: normalizedUsername,
           email: normalizedEmail,
           password,
           bio,

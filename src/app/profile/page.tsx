@@ -1,6 +1,7 @@
 import React from "react";
 import { ref } from "firebase/storage";
 import { storage } from "../../firebaseConfig";
+import Header from "../components/header";
 
 function Profile() {
   //   const pathReference = ref(storage, "images/stars.jpg");
@@ -11,6 +12,7 @@ function Profile() {
   //   );
   return (
     <>
+      <Header />
       <h1>Hellow world</h1>
     </>
   );
