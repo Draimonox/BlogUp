@@ -10,7 +10,7 @@ import {
   Anchor,
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
-import { deleteCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { Title } from "@mantine/core";
 
 function Login() {
@@ -19,7 +19,10 @@ function Login() {
   const router = useRouter();
 
   useEffect(() => {
-    deleteCookie("token");
+    const token = getCookie("token");
+    if (token) {
+      deleteCookie("token");
+    }
   }, []);
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -39,12 +42,13 @@ function Login() {
         }),
       });
       const data = await res.json();
-      console.log(data);
+      console.log("Response Data:", data);
 
       if (res.ok) {
         setCookie("token", data.token);
         console.log(data.token);
-        router.push("/");
+        console.log("Navigating to home page...");
+        window.location.href = "/";
       } else {
         throw new Error(data.details);
       }

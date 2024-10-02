@@ -26,12 +26,10 @@ export async function GET(req: Request) {
 
     return NextResponse.json(findUser, { status: 200 });
   } catch (err) {
-    console.error("Error in GET /api/profile:", err);
+    console.error(err);
     return NextResponse.json(
       { error: "Internal Server Error", details: (err as Error).message },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

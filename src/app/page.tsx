@@ -88,7 +88,7 @@ function SearchPage() {
           rightSection={
             <CloseButton
               aria-label="Clear input"
-              onClick={() => setSearchTerm("")} // Clear searchTerm
+              onClick={() => setSearchTerm("")} 
               style={{ display: searchTerm ? undefined : "none" }}
             />
           }

@@ -12,13 +12,14 @@ function PostBlog() {
   const [username, setUsername] = useState("");
 
   const router = useRouter();
-
   const token = getCookie("token");
-  if (!token) {
-    router.push("/login");
-  }
 
   useEffect(() => {
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
     async function fetchUsername() {
       if (token) {
         try {
@@ -26,23 +27,23 @@ function PostBlog() {
           const authorId = (decodedToken as jwt.JwtPayload)?.id;
 
           if (authorId) {
-            const res = await fetch(`/api/blogUp?authorId=${authorId}`, {
+            const res = await fetch(`/api/findUserById?authorId=${authorId}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
               },
             });
+
             const data = await res.json();
-            const username = data.username;
+
             if (res.ok) {
-              setUsername(username);
+              setUsername(data.username);
             } else {
               console.error("Failed to fetch username:", data.error);
             }
           }
         } catch (err) {
-          console.error("Failed to decode token:", err);
-          router.push("/");
+          console.error("Failed to decode token or fetch username:", err);
         }
       }
     }
@@ -64,7 +65,6 @@ function PostBlog() {
         console.log("Decoded Token:", decodedToken);
       } catch (err) {
         console.error("Failed to decode token:", err);
-        router.push("/");
         return;
       }
     }
@@ -87,8 +87,8 @@ function PostBlog() {
       console.log(data);
 
       if (res.ok) {
-        console.log("You Just BloggedUp!");
         router.push(`/profile/${username}`);
+        console.log("You Just BloggedUp!");
       } else {
         throw new Error(data.details);
       }

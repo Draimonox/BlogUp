@@ -110,7 +110,7 @@ const UserProfile = () => {
             </ul>
           </>
         ) : (
-          <Center h={700}>
+          <Center h={500}>
             <Loader color="green" />
           </Center>
         )}

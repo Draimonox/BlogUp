@@ -29,29 +29,30 @@ function Header() {
           const authorId = (decodedToken as jwt.JwtPayload)?.id;
 
           if (authorId) {
+            // Fetch the username using the authorId
             const res = await fetch(`/api/blogUp?authorId=${authorId}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
               },
             });
+
             const data = await res.json();
-            const username = data.username;
+
             if (res.ok) {
-              setUsername(username);
+              await setUsername(data.username);
             } else {
               console.error("Failed to fetch username:", data.error);
             }
           }
         } catch (err) {
-          console.error("Failed to decode token:", err);
-          router.push("/");
+          console.error("Failed to decode token or fetch username:", err);
         }
       }
     }
 
     fetchUsername();
-  }, [token, router]);
+  }, [token]);
 
   return (
     <>
@@ -94,7 +95,9 @@ function Header() {
             color="gray"
             size="lg"
             radius="xl"
+            disabled={!username}
             onClick={() => {
+              console.log("Navigating to profile:", username);
               router.push(`/profile/${username}`);
             }}
           >
