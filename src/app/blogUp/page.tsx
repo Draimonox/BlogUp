@@ -1,7 +1,7 @@
 ///
 "use client";
 import { Button, Center, Divider, Textarea, Title } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import jwt from "jsonwebtoken";
 import { useRouter } from "next/navigation";
@@ -9,12 +9,47 @@ import Header from "../components/header";
 function PostBlog() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [username, setUsername] = useState("");
+
   const router = useRouter();
 
   const token = getCookie("token");
   if (!token) {
     router.push("/");
   }
+
+  useEffect(() => {
+    async function fetchUsername() {
+      if (token) {
+        try {
+          const decodedToken = jwt.decode(token as string);
+          const authorId = (decodedToken as jwt.JwtPayload)?.id;
+
+          if (authorId) {
+            const res = await fetch(`/api/blogUp?authorId=${authorId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            const data = await res.json();
+            const username = data.username;
+            if (res.ok) {
+              setUsername(username);
+            } else {
+              console.error("Failed to fetch username:", data.error);
+            }
+          }
+        } catch (err) {
+          console.error("Failed to decode token:", err);
+          router.push("/");
+        }
+      }
+    }
+
+    fetchUsername();
+  }, [token, router]);
+
   async function postBlog(e: React.FormEvent) {
     e.preventDefault();
     if (!title) {
@@ -53,6 +88,7 @@ function PostBlog() {
 
       if (res.ok) {
         console.log("You Just BloggedUp!");
+        router.push(`/profile/${username}`);
       } else {
         throw new Error(data.details);
       }
@@ -97,7 +133,7 @@ function PostBlog() {
             style={{ marginTop: "15px" }}
             type="submit"
           >
-            Button
+            Post
           </Button>
         </form>
       </Center>

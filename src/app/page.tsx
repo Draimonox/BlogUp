@@ -17,7 +17,6 @@ import { IconAt } from "@tabler/icons-react";
 
 function SearchPage() {
   const [users, setUsers] = useState<User[]>([]);
-  const [textBox, setTextBox] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
@@ -104,58 +103,55 @@ function SearchPage() {
             maxWidth: "600px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              height: "100%",
-              width: "100%",
-              maxWidth: "600px",
-            }}
-            onClick={() => {
-              router.push("/blogUp");
-            }}
-          >
-            {Array.isArray(filteredUsers) && filteredUsers.length > 0 ? (
-              filteredUsers.map(
-                (
-                  user // Corrected line
-                ) => (
-                  <Paper
-                    key={user.username}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                      cursor: "pointer",
-                    }}
-                    shadow="sm"
-                    withBorder
-                    p="xl"
-                    radius="xl"
-                  >
-                    {user.image ? (
-                      <Image
-                        src={user.image}
-                        alt={`${user.name}'s profile`}
-                        width={75}
-                        height={75}
-                        style={{
-                          borderRadius: "50%",
-                        }}
-                      />
-                    ) : (
-                      <p>: )</p>
-                    )}
-                    <Text fw={700}>@{user.username}</Text>
-                  </Paper>
-                )
-              )
-            ) : (
-              <p>No users found.</p>
-            )}
-          </div>
+          {Array.isArray(filteredUsers) && filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <div
+                key={user.username}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginBottom: "1rem",
+                  height: "100%",
+                  width: "100%",
+                  maxWidth: "600px",
+                }}
+                onClick={() => {
+                  router.push(`/profile/${user.username}`);
+                }}
+              >
+                <Paper
+                  key={user.username}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1rem",
+                    cursor: "pointer",
+                  }}
+                  shadow="sm"
+                  withBorder
+                  p="xl"
+                  radius="xl"
+                >
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt={`${user.name}'s profile`}
+                      width={75}
+                      height={75}
+                      style={{
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <p>: )</p>
+                  )}
+                  <Text fw={700}>@{user.username}</Text>
+                </Paper>
+              </div>
+            ))
+          ) : (
+            <p>No users found.</p>
+          )}
         </ScrollArea>
       </Center>
     </>
