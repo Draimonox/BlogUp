@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { deleteCookie, setCookie } from "cookies-next";
 import { storage } from "@/firebaseConfig";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import userImage from "../../../user.png";
 
 function Register() {
   const [name, setName] = useState("");
@@ -58,14 +59,20 @@ function Register() {
     }
     const normalizedEmail = email.toLowerCase();
     const normalizedUsername = username.toLowerCase();
-    const imgRef = ref(storage, `images/${url.split("/").pop()}`);
-    const response = await fetch(url);
-    const blob = await response.blob();
-    await uploadBytes(imgRef, blob);
-    console.log("Uploaded a blob or file!");
-    const downloadURL = await getDownloadURL(imgRef);
-    console.log(downloadURL);
-    console.log("File available at", downloadURL);
+
+    let downloadURL = url;
+    if (url) {
+      const imgRef = ref(storage, `images/${url.split("/").pop()}`);
+      const response = await fetch(url);
+      const blob = await response.blob();
+      await uploadBytes(imgRef, blob);
+      console.log("Uploaded a blob or file!");
+      const downloadURL = await getDownloadURL(imgRef);
+      console.log(downloadURL);
+      console.log("File available at", downloadURL);
+    } else {
+      downloadURL = userImage.src;
+    }
     try {
       const res = await fetch("/api/register", {
         method: "POST",

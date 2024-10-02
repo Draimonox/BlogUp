@@ -9,6 +9,7 @@ import {
   Center,
   CloseButton,
   Input,
+  Loader,
   Paper,
   ScrollArea,
   Text,
@@ -132,25 +133,25 @@ function SearchPage() {
                   p="xl"
                   radius="xl"
                 >
-                  {user.image ? (
+                  {user.image && (
                     <Image
                       src={user.image}
-                      alt={`${user.name}'s profile`}
+                      alt=": )"
                       width={75}
                       height={75}
                       style={{
                         borderRadius: "50%",
                       }}
                     />
-                  ) : (
-                    <p>: )</p>
                   )}
                   <Text fw={700}>@{user.username}</Text>
                 </Paper>
               </div>
             ))
           ) : (
-            <p>No users found.</p>
+            <Center>
+              <Loader color="green" />
+            </Center>
           )}
         </ScrollArea>
       </Center>

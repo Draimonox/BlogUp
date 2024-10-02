@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Header from "../../components/header";
-import { Center, Divider, Paper, Text } from "@mantine/core";
+import { Center, Divider, Loader, Paper, Text } from "@mantine/core";
 interface UserData {
   name: string;
   username: string;
@@ -110,7 +110,9 @@ const UserProfile = () => {
             </ul>
           </>
         ) : (
-          <p>Loading...</p>
+          <Center h={700}>
+            <Loader color="green" />
+          </Center>
         )}
       </div>
     </>
