@@ -26,17 +26,15 @@ function SearchPage() {
     image?: string;
     name: string;
   }
-
   useEffect(() => {
     const token = getCookie("token");
-    console.log(token);
     if (!token) {
-      router.push("/login");
+      console.log("No token found, redirecting to login");
+      window.location.href = "/login";
     } else {
       getAllUsers();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router]);
 
   async function getAllUsers() {
     try {
@@ -88,7 +86,7 @@ function SearchPage() {
           rightSection={
             <CloseButton
               aria-label="Clear input"
-              onClick={() => setSearchTerm("")} 
+              onClick={() => setSearchTerm("")}
               style={{ display: searchTerm ? undefined : "none" }}
             />
           }
