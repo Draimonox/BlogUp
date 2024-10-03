@@ -23,7 +23,7 @@ function SearchPage() {
   const router = useRouter();
   interface User {
     username: string;
-    image?: string;
+    image: string;
     name: string;
   }
   useEffect(() => {
@@ -49,6 +49,7 @@ function SearchPage() {
 
       if (res.ok) {
         setUsers(data);
+        console.log(data);
         console.log("Fetched all users successfully!");
       } else {
         throw new Error(data.details);

@@ -36,6 +36,8 @@ function Register() {
   const handleImageChange = (file: File | null) => {
     if (file) {
       setUrl(URL.createObjectURL(file));
+    } else {
+      setUrl("");
     }
   };
 
@@ -60,18 +62,18 @@ function Register() {
     const normalizedEmail = email.toLowerCase();
     const normalizedUsername = username.toLowerCase();
 
-    let downloadURL = url;
+    let downloadURL = userImage.src;
+
     if (url) {
       const imgRef = ref(storage, `images/${url.split("/").pop()}`);
       const response = await fetch(url);
       const blob = await response.blob();
       await uploadBytes(imgRef, blob);
       console.log("Uploaded a blob or file!");
-      const downloadURL = await getDownloadURL(imgRef);
+      // const downloadURL = await getDownloadURL(imgRef);
+      downloadURL = await getDownloadURL(imgRef);
       console.log(downloadURL);
       console.log("File available at", downloadURL);
-    } else {
-      downloadURL = userImage.src;
     }
     try {
       const res = await fetch("/api/register", {

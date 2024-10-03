@@ -38,6 +38,7 @@ const UserProfile = () => {
           }
           const data = await res.json();
           setUserData(data);
+          console.log(data);
           setPosts([...data.posts]);
         } catch (error) {
           console.error("Failed to fetch user data:", error);
