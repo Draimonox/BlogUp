@@ -61,24 +61,35 @@ const MainPage = () => {
     }
   };
 
-  function handleLikes(postId: string) {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) => {
-        if (post.id === postId) {
-          const isLiked = likedPosts.includes(postId);
-          const newLikes = isLiked ? post.likes - 1 : post.likes + 1;
+  async function handleLikes(postId: string) {
+    const isLiked = likedPosts.includes(postId);
 
-          setLikedPosts((prevLiked) =>
-            isLiked
-              ? prevLiked.filter((id) => id !== postId)
-              : [...prevLiked, postId]
-          );
+    try {
+      await fetch(`/api/likePost/${postId}`, {
+        method: isLiked ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-          return { ...post, likes: newLikes };
-        }
-        return post;
-      })
-    );
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post.id === postId) {
+            const newLikes = isLiked ? post.likes - 1 : post.likes + 1;
+            return { ...post, likes: newLikes };
+          }
+          return post;
+        })
+      );
+
+      setLikedPosts((prevLiked) =>
+        isLiked
+          ? prevLiked.filter((id) => id !== postId)
+          : [...prevLiked, postId]
+      );
+    } catch (error) {
+      console.error("Error updating likes:", error);
+    }
   }
   return (
     <>

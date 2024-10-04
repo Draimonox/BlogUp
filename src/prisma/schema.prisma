@@ -32,4 +32,5 @@ model Post {
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  String?
   content   String?
+  likes     Int      @default(0)
 }
