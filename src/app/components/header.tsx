@@ -73,12 +73,23 @@ function Header() {
           c="teal.4"
           style={{ marginLeft: "50px", cursor: "pointer" }}
           onClick={() => {
-            router.push("/");
+            router.push("/main");
           }}
         >
           BlogUp!
         </Text>
         <div style={{ display: "flex", gap: "10px" }}>
+          <Button
+            variant="light"
+            color="blue"
+            size="lg"
+            radius="xl"
+            onClick={() => {
+              router.push("/");
+            }}
+          >
+            Search
+          </Button>
           <Button
             variant="light"
             color="green"

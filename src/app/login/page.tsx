@@ -46,7 +46,7 @@ function Login() {
         setCookie("token", data.token);
         console.log(data.token);
         console.log("Navigating to home page...");
-        window.location.href = "/";
+        window.location.href = "/main";
       } else {
         throw new Error(data.details);
       }

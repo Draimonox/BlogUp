@@ -95,7 +95,7 @@ function Register() {
       if (res.ok) {
         setCookie("token", data.token);
         console.log(data.token);
-        router.push("/");
+        router.push("/main");
       } else {
         throw new Error(data.details);
       }

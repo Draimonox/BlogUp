@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Header from "../components/header";
-import { Center, Divider, Loader, Paper, Text } from "@mantine/core";
+import { Button, Center, Divider, Loader, Paper, Text } from "@mantine/core";
 import { getCookie } from "cookies-next";
 
 interface Post {
@@ -14,11 +14,13 @@ interface Post {
     username: string;
     image: string;
   };
+  likes: number;
 }
 
 const MainPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [likedPosts, setLikedPosts] = useState<string[]>([]);
 
   useEffect(() => {
     const token = getCookie("token");
@@ -44,7 +46,13 @@ const MainPage = () => {
       }
 
       const data = await res.json();
-      setPosts(data);
+      // setPosts(data);
+      const postsWithLikes = data.map((post: Post) => ({
+        ...post,
+        likes: post.likes || 0,
+      }));
+
+      setPosts(postsWithLikes);
       console.log("Fetched all posts successfully!");
     } catch (error) {
       console.error(error);
@@ -53,6 +61,25 @@ const MainPage = () => {
     }
   };
 
+  function handleLikes(postId: string) {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => {
+        if (post.id === postId) {
+          const isLiked = likedPosts.includes(postId);
+          const newLikes = isLiked ? post.likes - 1 : post.likes + 1;
+
+          setLikedPosts((prevLiked) =>
+            isLiked
+              ? prevLiked.filter((id) => id !== postId)
+              : [...prevLiked, postId]
+          );
+
+          return { ...post, likes: newLikes };
+        }
+        return post;
+      })
+    );
+  }
   return (
     <>
       <Header />
@@ -79,6 +106,10 @@ const MainPage = () => {
                     style={{
                       marginTop: "15px",
                       width: "50%",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      window.location.href = `/profile/${post.author.username}`;
                     }}
                   >
                     <li
@@ -88,10 +119,6 @@ const MainPage = () => {
                         borderRadius: "5%",
                       }}
                     >
-                      <Text ta="center" size="lg" fw={500} td="underline">
-                        {post.title}
-                      </Text>
-                      <Text ta="center">{post.content}</Text>
                       {post.author && post.author.image && (
                         <Center>
                           <Image
@@ -108,6 +135,32 @@ const MainPage = () => {
                           <strong>Posted by: </strong>@{post.author.username}
                         </Text>
                       )}
+                      <Divider size="sm" />
+                      <Text
+                        ta="center"
+                        size="lg"
+                        fw={500}
+                        style={{ marginTop: "15px" }}
+                        td="underline"
+                      >
+                        {post.title}
+                      </Text>
+                      <Text ta="center">{post.content}</Text>
+
+                      {/* Like Button and Counter */}
+                      <Center mt={15}>
+                        <Button
+                          variant="outline"
+                          size="xs"
+                          color="red"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleLikes(post.id);
+                          }}
+                        >
+                          Like ({post.likes})
+                        </Button>
+                      </Center>
                     </li>
                   </Paper>
                 </Center>
