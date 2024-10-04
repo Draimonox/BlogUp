@@ -36,13 +36,8 @@ const MainPage = () => {
       }
 
       const data = await res.json();
-      // setPosts(data);
-      const postsWithLikes = data.map((post: Post) => ({
-        ...post,
-        likes: post.likes || 0,
-      }));
 
-      setPosts(postsWithLikes);
+      setPosts(data);
       console.log("Fetched all posts successfully!");
     } catch (error) {
       console.error(error);
