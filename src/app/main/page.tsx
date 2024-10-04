@@ -22,16 +22,6 @@ const MainPage = () => {
   const [loading, setLoading] = useState(true);
   const [likedPosts, setLikedPosts] = useState<string[]>([]);
 
-  useEffect(() => {
-    const token = getCookie("token");
-    if (!token) {
-      console.log("No token found, redirecting to login");
-      window.location.href = "/login";
-    } else {
-      getAllPosts();
-    }
-  }, []);
-
   const getAllPosts = async () => {
     try {
       const res = await fetch("/api/findAll", {
@@ -91,6 +81,15 @@ const MainPage = () => {
       console.error("Error updating likes:", error);
     }
   }
+  useEffect(() => {
+    const token = getCookie("token");
+    if (!token) {
+      console.log("No token found, redirecting to login");
+      window.location.href = "/login";
+    } else {
+      getAllPosts();
+    }
+  }, []);
   return (
     <>
       <Header />
@@ -157,8 +156,6 @@ const MainPage = () => {
                         {post.title}
                       </Text>
                       <Text ta="center">{post.content}</Text>
-
-                      {/* Like Button and Counter */}
                       <Center mt={15}>
                         <Button
                           variant="outline"
