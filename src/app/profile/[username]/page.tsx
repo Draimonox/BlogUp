@@ -23,7 +23,6 @@ interface Post {
 const UserProfile = () => {
   const { username } = useParams();
   const [userData, setUserData] = useState<UserData | null>(null);
-
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
